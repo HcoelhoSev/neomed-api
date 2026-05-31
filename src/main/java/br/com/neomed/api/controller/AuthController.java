@@ -5,10 +5,7 @@ import br.com.neomed.api.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/api/auth")
@@ -18,9 +15,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDTO dto) {
-        authService.register(dto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserAuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO dto) {
+        return ResponseEntity.ok(authService.register(dto));
     }
 
     @PostMapping("/login")
@@ -30,7 +26,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponseDTO> refresh(@Valid @RequestBody RefreshTokenRequestDTO dto) {
-        return ResponseEntity.ok(authService.refresh(dto));
+        return ResponseEntity.ok(authService.refreshToken(dto));
     }
 
     @PostMapping("/forgot-password")
@@ -44,5 +40,9 @@ public class AuthController {
         authService.resetPassword(dto);
         return ResponseEntity.ok().build();
     }
-}
 
+    @GetMapping("/me")
+    public ResponseEntity<MeResponseDTO> me() {
+        return ResponseEntity.ok(authService.me());
+    }
+}
